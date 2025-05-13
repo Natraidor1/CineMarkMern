@@ -79,6 +79,36 @@ registerClientesController.postClientes = async (req,res)=>{
         console.log("error: " + error)
     }
 
+
 };
+
+registerClientesController.verifyCodeEmail = async (req,res) =>{
+    const { requireCode } = req.body;
+
+    const token = req.cookies.verificationToken;
+
+
+    try {
+        
+        const decoded = jsonwebtoken.verify(token, config.JWT.SECRET);
+        const { correo, verificationCode: storedCode } = decoded;
+    
+ 
+        if (requireCode !== storedCode) {
+          return res.json({ message: "Invalid code" });
+        }
+    
+        
+        const cliente = await clientesModel.findOne({ correo });
+        cliente.isVerified = true;
+        await cliente.save();
+    
+        res.clearCookie("verificationToken");
+    
+        res.json({ message: "correo enviado satisfactoriamente" });
+      } catch (error) {
+        console.log("error" + error);
+      }
+}
 
 export default registerClientesController
