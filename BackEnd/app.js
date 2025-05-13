@@ -18,6 +18,8 @@ app.use(cookieParser());
 app.use("/api/Peliculas",peliculasRoute)
 app.use("/api/registerEmpleados",empleadosRegisterRoute)
 app.use("/api/Empleados",empleadosRoute)
+app.use("/api/registerClients",clientesRegister)
+app.use("/api/Empleados",empleadosRoute)
 
 
 
