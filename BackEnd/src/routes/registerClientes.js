@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 router
-.route("/:id")
+.route("/")
 .post(registerClientesController.postClientes);
 
 router

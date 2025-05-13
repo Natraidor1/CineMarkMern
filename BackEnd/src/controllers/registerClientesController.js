@@ -55,7 +55,7 @@ registerClientesController.postClientes = async (req,res)=>{
 
           const mailOptions = {
             from: config.email.email_user,
-            to: email,
+            to: correo,
             subject: "Verificación de correo",
             text:
               "Para verificar tu cuenta, utiliza el siguiente codigo: " +

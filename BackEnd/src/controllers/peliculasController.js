@@ -1,53 +1,46 @@
 import modeloPeliculas from "../models/peliculas.js"
+import { v2 as cloudinary } from "cloudinary";
+
+import { config } from "../config.js";
+
+
+cloudinary.config({
+    cloud_name: config.cloudinary.cloudinary_name,
+    api_key: config.cloudinary.cloudinary_api_key,
+    api_secret: config.cloudinary.cloudinary_api_secret,
+  });
 
 const peliculasController = {};
 
 
-peliculasController.getPeli = async (req, res) =>{
-    const pelicula = await modeloPeliculas.find();
-    res.json(pelicula);
-};
-
-peliculasController.postPeli = async (req,res) =>{
-    const {titulo, descripcion, director, genero, anio, duracion, imagen} = req.body;
-    const newPeli = new modeloPeliculas({titulo, descripcion, director, genero, anio, duracion, imagen})
-    await newPeli.save();
-    res.json({message: "pelicula insertada"})
-
-};
+peliculasController.getAllPelicula = async (req, res) => {
+    const peli = await modeloPeliculas.find();
+    res.json(peli);
+  };
 
 
-peliculasController.deletePeli = async (req,res)=>{
-
-    const deletePelicula = await modeloPeliculas.findByIdAndDelete(req.params.id)
-
-    if(!deletePelicula){
-        return res.status(404).json({message : "pelicula no encontrada"})
-
+  peliculasController.createPelicula = async (req, res) => {
+    try {
+      const { titulo, descripcion, director, genero, anio, duracion } = req.body;
+      let imageUrl = "";
+  
+      if (req.file) {
+        
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "public",
+          allowed_formats: ["jpg", "png", "jpeg"],
+        });
+        imageUrl = result.secure_url;
+      }
+  
+      const newPeli = new modeloPeliculas({ titulo, descripcion, director, genero, anio, duracion, imagen: imageUrl });
+      newPeli.save();
+  
+      res.json({ message: "peli saved" });
+    } catch (error) {
+      console.log("error" + error);
     }
-    res.json({message: "pelicula eliminada"})
-};
+  };
 
-peliculasController.updatePeli = async (req, res) =>{
-    const {titulo, descripcion, director, genero, anio, duracion, imagen} = req.body;
-
-    await modeloPeliculas.findByIdAndUpdate(
-        req.params.id,
-    {
-        titulo, 
-        descripcion, 
-        director, 
-        genero, 
-        anio, 
-        duracion, 
-        imagen
-    },
-
-    {
-        new:true
-    }
-    );
-    res.json({message: "Pelicula actualizada"})
-};
 
 export default peliculasController;

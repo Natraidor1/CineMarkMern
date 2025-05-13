@@ -1,18 +1,17 @@
 import express from "express";
 import peliculasController from "../controllers/peliculasController.js";
+import multer from "multer";
 
 const router = express.Router();
 
 
-router
-.route("/")
-.get(peliculasController.getPeli)
-.post(peliculasController.postPeli)
+const upload = multer({dest: "public/"})
 
 router
-.route("/:id")
-.put(peliculasController.updatePeli)
-.delete(peliculasController.deletePeli)
+.route("/")
+.get(peliculasController.getAllPelicula)
+.post(upload.single("imagen"),peliculasController.createPelicula)
+
 
 
 
