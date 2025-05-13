@@ -1,5 +1,3 @@
-import e from "express";
-import empleados from "../models/empleados.js";
 import empleadosModel from "../models/empleados.js";
 
 
